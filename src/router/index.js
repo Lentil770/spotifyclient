@@ -1,24 +1,39 @@
 import { createRouter, createWebHistory } from "vue-router";
 import HomeView from "../views/HomeView.vue";
 import RedirectView from "../views/RedirectView.vue";
+import LoginView from "../views/LoginView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
       path: "/",
-      name: "default",
-      component: RedirectView,
+      redirect: "/home",
     },
     {
       path: "/home",
       name: "home",
       component: HomeView,
+      beforeEnter: (to, from, next) => {
+        if (!localStorage.getItem("spotify_access_token")) {
+          next("/login");
+        } else {
+          next();
+        }
+      },
     },
+    // {
+    //   path: "/redirect",
+    //   name: "redirect",
+    //   component: RedirectView,
+    // },
     {
-      path: "/redirect",
-      name: "redirect",
-      component: RedirectView,
+      path: "/login",
+      name: "login",
+      component: LoginView,
+      meta: {
+        hideNavbar: true,
+      },
     },
     {
       path: "/about",

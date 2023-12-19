@@ -1,16 +1,19 @@
 <script setup>
-import { RouterLink, RouterView } from 'vue-router'
+import { RouterLink, RouterView, useRoute } from 'vue-router'
+import {logout } from './helpers/authfunctions.js'
 
+const route = useRoute();
 
 </script>
 
 <template>
   <header>
     <div class="wrapper">
-
-      <nav>
+      <p style="position: absolute;top:10px; left: 10px">Spotify Client</p>
+      <nav v-if="!(route.meta?.hideNavbar)" style="text-align: end;">
         <RouterLink to="/">Home</RouterLink>
-        <!-- <RouterLink to="/about">About</RouterLink> -->
+        <!-- hide if on login page... -->
+        <button @click="logout()">logout</button> 
       </nav>
     </div>
   </header>
