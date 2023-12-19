@@ -11,7 +11,7 @@ if (code) {
 }
 
 const clientId =  import.meta.env.VITE_SPOTIFY_CLIENT_ID; // env var 
-const redirectUri = import.meta.env.VITE_SPOTIFY_REDIRECT_URL; //env var
+const redirectUri = window.location.origin + import.meta.env.VITE_SPOTIFY_REDIRECT_URL; //env var
 
 async function generateSpotifyToken() {
     
