@@ -1,5 +1,6 @@
 const clientId = import.meta.env.VITE_SPOTIFY_CLIENT_ID; // env var
-const redirectUri = import.meta.env.VITE_SPOTIFY_REDIRECT_URL; //env var
+const redirectUri =
+  window.location.origin + import.meta.env.VITE_SPOTIFY_REDIRECT_URL; //env var
 
 let currentToken = localStorage.getItem("spotify_access_token");
 
