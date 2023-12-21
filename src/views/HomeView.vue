@@ -1,8 +1,8 @@
 <script setup>
 import AlbumListItem from '@/components/AlbumListItem.vue';
-import { fetchPlaylists, fetchProfile, playPlaylist, pausePlayback, switchPlaybackToLocalDevice } from '@/helpers/apifunctions';
+import { fetchPlaylists, fetchProfile, playPlaylist, pausePlayback, switchPlaybackToLocalDevice, fetchPlaylistTracks } from '@/helpers/apifunctions';
 import { embedplaybacksdk } from '@/helpers/playback';
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 
 
 const username = ref('')
@@ -10,6 +10,14 @@ const userid = ref(null)
 const playlists = ref([])
 const spotifyPlayer = ref(null)
 const isPlaying = ref(false)
+const showTrackList = ref(false)
+const trackListMinify = ref(false)
+const currentPage = ref(1);
+const totalTracks = ref(0);
+const totalPages = computed(() => Math.ceil(totalTracks.value / 10));
+const paginatedTracks = ref([]);
+const currentPlaylistId = ref(null);
+
 let currentToken = localStorage.getItem('spotify_access_token');
 
 
@@ -34,7 +42,6 @@ window.onSpotifyWebPlaybackSDKReady = () => {
     volume: 0.5,
   });
 
-  //   app.config.globalProperties.$spotifyPlayer = player;
   localStorage.setItem("spotify-player", JSON.stringify("player"));
   // Ready
   spotifyPlayer.value.addListener("ready", ({ device_id }) => {
@@ -58,10 +65,6 @@ window.onSpotifyWebPlaybackSDKReady = () => {
     console.error(message);
   });
 
-  //document.getElementById("togglePlay").onclick = function () {
-    //console.log("toggleplay", spotifyPlayer.value);
-    // spotifyPlayer.value.togglePlay();
-  //};
 
   spotifyPlayer.value.connect();
   spotifyPlayer.value.setName("Mushkies Web Client");
@@ -80,10 +83,40 @@ const pause = () => {
   })
 }
 
-const handlePlaylistClick = (playlistUri) => {
-  console.log('handleplaylistclick',playlistUri,isPlaying.value);
+const handlePlayClick = (playlistUri, playlistId) => {
+  console.log('handleplayclick',playlistUri,isPlaying.value);
   isPlaying.value && isPlaying.value==playlistUri ? pause() : spotifyPlay(playlistUri)
+  
+  handlePlaylistClick(playlistId);
 }
+
+const handlePlaylistClick = async (playlistId) => {
+  if (currentPlaylistId.value !== playlistId) {
+    currentPlaylistId.value = playlistId;
+    currentPage.value = 1; // Reset to the first page
+  }
+  console.log('handleplaylistclick', playlistId);
+  // set show tracklist to value of tracks
+
+  const playlistTracks = await fetchPlaylistTracks(playlistId, currentPage.value);
+  console.log({playlistTracks});
+    
+  totalTracks.value = playlistTracks.total; // Update total number of tracks
+  paginatedTracks.value = playlistTracks.items;
+
+  // Set show tracklist to value of paginated tracks
+  showTrackList.value = paginatedTracks.value.map(track => track.track.name);
+}
+
+
+const changePage = (change) => {
+  const newPage = currentPage.value + change;
+  if (newPage > 0 && newPage <= totalPages.value) {
+    currentPage.value = newPage;
+    handlePlaylistClick(currentPlaylistId.value);
+  }
+};
+
 
 </script>
 
@@ -103,7 +136,7 @@ const handlePlaylistClick = (playlistUri) => {
       <div v-show="!trackListMinify" v-for="track in showTrackList" class="track-item">{{ track }}</div>
     </div>
     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); grid-gap: 1rem;">
-      <AlbumListItem v-for="playlist in playlists" :playlist="playlist" :play="spotifyPlay" @click="handlePlaylistClick(playlist.uri)" />
+      <AlbumListItem v-for="playlist in playlists" :playlist="playlist" :play="spotifyPlay" @click="handlePlaylistClick(playlist.id)" :handlePlayClick="handlePlayClick" />
    </div>
   </main>
 </template>

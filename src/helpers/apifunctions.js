@@ -65,6 +65,24 @@ async function fetchPlaylists() {
   return await result.json();
 }
 
+async function fetchPlaylistTracks(playlistId, pageNo) {
+  const offsetInt = (parseInt(pageNo) - 1) * 10 + 1;
+  const offsetString = pageNo && pageNo > 1 ? "&offset=" + offsetInt : "";
+  console.log({ pageNo, offsetString });
+  const result = await fetch(
+    "https://api.spotify.com/v1/playlists/" +
+      playlistId +
+      "/tracks?limit=10" +
+      offsetString,
+    {
+      method: "GET",
+      headers: { Authorization: `Bearer ${currentToken}` },
+    }
+  );
+
+  return await result.json();
+}
+
 async function playPlaylist(uri) {
   const result = await fetch(
     "https://api.spotify.com/v1/me/player/play", //add device id (need to save it)
@@ -115,4 +133,5 @@ export {
   playPlaylist,
   pausePlayback,
   switchPlaybackToLocalDevice,
+  fetchPlaylistTracks,
 };
