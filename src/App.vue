@@ -9,7 +9,7 @@ const route = useRoute();
 <template>
   <header>
     <div class="wrapper">
-      <p style="position: absolute;top:10px; left: 10px">Spotify Client</p>
+      <!-- <p style="position: absolute;top:10px; left: 10px">Spotify Client</p> -->
       <nav v-if="!(route.meta?.hideNavbar)" style="text-align: end;">
         <RouterLink to="/">Home</RouterLink>
         <!-- hide if on login page... -->
@@ -25,8 +25,8 @@ const route = useRoute();
 
 <style scoped>
 header {
-  line-height: 1.5;
-  max-height: 100vh;
+  /* line-height: 1.5; */
+  /* max-height: 100vh; */
 }
 
 .logo {
@@ -38,7 +38,19 @@ nav {
   width: 100%;
   font-size: 12px;
   text-align: center;
-  margin-top: 2rem;
+  /* margin-top: 2rem; */
+}
+
+button {
+  background-color: #1DB954; /* Spotify green */
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  margin: 5px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
 }
 
 nav a.router-link-exact-active {
@@ -81,8 +93,9 @@ nav a:first-of-type {
     margin-left: -1rem;
     font-size: 1rem;
 
-    padding: 1rem 0;
-    margin-top: 1rem;
+    /* padding: 1rem 0; */
+    /* margin-top: 1rem; */
   }
 }
+
 </style>

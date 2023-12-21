@@ -88,10 +88,78 @@ const handlePlaylistClick = (playlistUri) => {
 </script>
 
 <template>
-  <main>
-    <p style="position: absolute;top:10px;right:10px">HELLO {{ username }}</p>
+  <main class="main">
+    <p style="position: absolute;top:40px;left:40px; color: #1DB954;">Hello {{ username }}</p>
+    <div v-show="showTrackList" class="track-list-container">
+      <div>
+      <button @click="trackListMinify = !trackListMinify" style="float: left;">{{trackListMinify ? 'show' : 'hide'}}</button>
+      <div v-show="!trackListMinify" style="margin-left:100px" >
+        <button @click="changePage(-1)" :disabled="currentPage.value <= 1">Previous</button>
+        <span>Page {{ currentPage }} of {{ totalPages }}</span>
+        <button @click="changePage(1)" :disabled="currentPage.value >= totalPages">Next</button>
+      </div>
+
+      </div>
+      <div v-show="!trackListMinify" v-for="track in showTrackList" class="track-item">{{ track }}</div>
+    </div>
     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); grid-gap: 1rem;">
       <AlbumListItem v-for="playlist in playlists" :playlist="playlist" :play="spotifyPlay" @click="handlePlaylistClick(playlist.uri)" />
    </div>
   </main>
 </template>
+
+<style scoped>
+.track-list-container {
+  /* background: grey; */
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  margin: 20px;
+  font-family: 'Arial', sans-serif;
+
+}
+
+.track-list-container button {
+  background-color: #1DB954; /* Spotify green */
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  margin: 5px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+.track-list-container button:hover {
+  background-color: #1ED760; /* Lighter green for hover state */
+}
+
+.track-list-container button:disabled {
+  background-color: #cccccc; /* Grey out the button when disabled */
+  cursor: not-allowed;
+}
+
+.track-list-container span {
+  font-size: 0.9rem;
+  color: #1DB954;
+  margin: 0 10px;
+}
+
+.track-item {
+  border-bottom: 1px solid #f0f0f0;
+  padding: 10px 0;
+  color: #1DB954
+}
+
+.track-item:last-child {
+  border-bottom: none;
+}
+
+.track-item:before {
+  content: '♪ '; /* Adds a musical note before each track */
+  color: #1DB954;
+  font-size: 1.2rem;
+}
+
+</style>
