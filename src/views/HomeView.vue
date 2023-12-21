@@ -125,7 +125,7 @@ const changePage = (change) => {
     <p style="position: absolute;top:40px;left:40px; color: #1DB954;">Hello {{ username }}</p>
     <div v-show="showTrackList" class="track-list-container">
       <div>
-      <button @click="trackListMinify = !trackListMinify" style="float: left;">{{trackListMinify ? 'show' : 'hide'}}</button>
+      <button @click="trackListMinify = !trackListMinify" :style= "[trackListMinify ? {} : {float:'left'}]">{{trackListMinify ? 'show' : 'hide'}}</button>
       <div v-show="!trackListMinify" style="margin-left:100px" >
         <button @click="changePage(-1)" :disabled="currentPage.value <= 1">Previous</button>
         <span>Page {{ currentPage }} of {{ totalPages }}</span>
